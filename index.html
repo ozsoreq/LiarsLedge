@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Liar's Ledge</title>
+  <meta name="description" content="A two-hand browser climbing game where the wall lies to you.">
+  <meta name="theme-color" content="#161b24">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="game" aria-label="Liar's Ledge game canvas"></canvas>
+
+  <div id="overlay" class="overlay">
+    <section class="panel" id="title">
+      <div class="kicker">A climbing game about trust</div>
+      <h1>Liar's Ledge</h1>
+      <p class="tag">The wall lies. Your hands don't.</p>
+      <div class="buttons">
+        <button id="btn-continue" class="primary hidden">Continue</button>
+        <button id="btn-new">New climb</button>
+      </div>
+      <div class="controls">
+        <div><kbd>Left button</kbd><span>hold + move: reach with the left hand. Release: grip.</span></div>
+        <div><kbd>Right button</kbd><span>same for the right hand</span></div>
+        <div><kbd>Both buttons</kbd><span>let go with both hands: a dyno (jump)</span></div>
+        <div><kbd>Wheel</kbd><span>pull up / lower on the gripping arm(s). <b>W</b> / <b>S</b> also work</span></div>
+        <div><kbd>Esc</kbd><span>pause</span></div>
+      </div>
+      <p class="fine" id="title-note">Mouse required · Headphones recommended · Progress saves automatically</p>
+    </section>
+
+    <section class="panel hidden" id="pause">
+      <div class="kicker">Paused</div>
+      <h2 id="pause-height">0 m</h2>
+      <p class="stats" id="pause-stats"></p>
+      <div class="buttons">
+        <button id="btn-resume" class="primary">Resume</button>
+      </div>
+      <div class="settings">
+        <label class="row"><span>Sound</span><input type="checkbox" id="opt-sound" checked></label>
+        <label class="row"><span>Mouse sensitivity</span><input type="range" id="opt-sens" min="0.4" max="2" step="0.05" value="1"></label>
+      </div>
+      <div class="buttons small">
+        <button id="btn-editor">Level editor</button>
+        <button id="btn-restart" class="danger">Start over from the ground</button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="confirm">
+      <div class="kicker">Start over?</div>
+      <h2>Back to the ground</h2>
+      <p class="stats" id="confirm-text">Your current climb will be lost.</p>
+      <div class="buttons">
+        <button id="btn-confirm-yes" class="danger">Yes, start over</button>
+        <button id="btn-confirm-no">Cancel</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="editor-ui" class="hidden"></div>
+  <div id="touch-warning" class="hidden">Liar's Ledge needs a mouse with two buttons. Please open it on a desktop browser.</div>
+
+  <script src="src/util.js"></script>
+  <script src="src/config.js"></script>
+  <script src="src/physics.js"></script>
+  <script src="src/level.js"></script>
+  <script src="src/sim.js"></script>
+  <script src="src/narrator.js"></script>
+  <script src="src/audio.js"></script>
+  <script src="src/render.js"></script>
+  <script src="src/editor.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>

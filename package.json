@@ -1,0 +1,12 @@
+{
+  "name": "liars-ledge",
+  "version": "0.1.0",
+  "description": "A two-hand browser climbing game where the wall lies to you.",
+  "private": true,
+  "scripts": {
+    "start": "npx serve .",
+    "test": "node tools/test.js",
+    "test:long": "node tools/test.js --long"
+  },
+  "license": "UNLICENSED"
+}
