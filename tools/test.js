@@ -186,12 +186,45 @@ test('the Guide goes silent at the summit', () => {
   assert(!g.speaking() && g.silent, 'still talking');
 });
 
+test('fake summit: credits roll, the floor gives way, the catch ledge ~30 m below holds you', () => {
+  const L = level();
+  const s = new LL.Sim(L);
+  const fsL = L.ledges.find((l) => l.type === 'fakeSummit');
+  // drop the climber onto the fake summit ledge
+  const nb = new LL.Ragdoll(0, fsL.y + 1.2);
+  s.hands.forEach((h, i) => { s.body.unpin(i); h.state = 'free'; h.hold = null; });
+  s.body.restore(nb.serialize());
+  steps(s, 3);
+  assert(s.events.some((e) => e.type === 'credits'), 'no credits (height ' + s.height().toFixed(1) + ')');
+  assert(L.holds.filter((h) => h.y0 > L.veilY).every((h) => !s.holdUsable(h)), 'holds above the painted sky are usable');
+  steps(s, 17);
+  assert(s.events.some((e) => e.type === 'collapse') && fsL.broken, 'no collapse');
+  steps(s, 6);
+  const fell = s.events.find((e) => e.type === 'fell');
+  assert(fell && fell.dist > 25 && fell.dist < 35, 'fell ' + (fell && fell.dist.toFixed(1)));
+  assert(Math.abs(s.height() + 0.97 - C.CATCH_LEDGE) < 1.2, 'landed at ' + s.height().toFixed(1));
+  assert(L.holds.filter((h) => h.route && h.y0 > L.veilY).every((h) => s.holdUsable(h)), 'route above still hidden after collapse');
+});
+
+test('real summit: resting on the plateau finishes the climb', () => {
+  const L = level();
+  const s = new LL.Sim(L);
+  s.fs.done = true;
+  const nb = new LL.Ragdoll(0, C.TOP + 1.2);
+  s.hands.forEach((h, i) => { s.body.unpin(i); h.state = 'free'; h.hold = null; });
+  s.body.restore(nb.serialize());
+  steps(s, 3);
+  assert(s.finished && s.events.some((e) => e.type === 'summit'), 'not finished');
+});
+
 function climb(from, to, budget) {
   const s = new LL.Sim(level());
   if (from > 0) s.teleport(from);
   const bot = new Bot(s);
   while (s.best < to && s.time < budget) {
+    const t0 = s.time;
     if (!s.anyGrip()) bot.recover(); else bot.move();
+    if (s.time === t0) steps(s, 0.5);
     s.events.length = 0;
   }
   return s;
